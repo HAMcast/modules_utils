@@ -52,7 +52,7 @@ typedef struct
     JRB bootstrapMsgStore;	/* for future security enhancement */
     pthread_mutex_t bootstrapMutex;	/* for future security enhancement */
     void *certificateStore;	/* for future security enhancement */
-    pthread_mutex_t certificateMutex;	/* for future security enhancement */
+    //pthread_mutex_t certificateMutex;	/* for future security enhancement */
 } ChimeraState;
 
 /** host_get:
