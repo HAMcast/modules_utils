@@ -132,7 +132,6 @@ void message_free (Message * msg)
             msg->buffer = NULL;
         }
         free (msg);
-        msg = NULL;
     }
 }
 
@@ -266,11 +265,6 @@ void message_handler (void *chstate, uint16_t type, messagehandler_t func, int a
     JRB node;
     ChimeraState *state = (ChimeraState *) chstate;
     MessageGlobal *msgglob = (MessageGlobal *) state->message;
-    MessageProperty *msgprop =
-    (MessageProperty *) malloc (sizeof (MessageProperty));
-
-    msgprop->handler = func;
-    msgprop->ack = ack;
 
     /* add message handler function into the set of all handlers */
     pthread_mutex_lock (&msgglob->lock);
@@ -281,6 +275,11 @@ void message_handler (void *chstate, uint16_t type, messagehandler_t func, int a
         pthread_mutex_unlock (&msgglob->lock);
         return;
     }
+
+    MessageProperty *msgprop = (MessageProperty *) malloc (sizeof (MessageProperty));
+    msgprop->handler = func;
+    msgprop->ack = ack;
+
     jrb_insert_int (msgglob->handlers, type, new_jval_v (msgprop));
 
     pthread_mutex_unlock (&msgglob->lock);

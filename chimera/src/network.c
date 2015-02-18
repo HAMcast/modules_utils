@@ -133,8 +133,6 @@ void *network_init (void *logs, int port)
     const int one = 1;
     NetworkGlobal *ng;
 
-    ng = (NetworkGlobal *) malloc (sizeof (NetworkGlobal));
-
     /* create socket */
     sd = socket (AF_INET, SOCK_DGRAM, 0);
     if (sd < 0)
@@ -157,9 +155,12 @@ void *network_init (void *logs, int port)
         return (NULL);
     }
 
+    ng = (NetworkGlobal *) malloc (sizeof (NetworkGlobal));
+
     if ((ret = pthread_mutex_init (&(ng->lock), NULL)) != 0)
     {
         close (sd);
+        free(ng);
         return (NULL);
     }
 
@@ -186,7 +187,6 @@ void *retransmit_packets(void *state)
         // wake up, get all the packets to be transmitted by now,
         //  send them again or delete them from the priqueue
         now = dtime();
-        int resend = 0;
 
         pthread_mutex_lock (&(ng->lock));
         for(pqnode = jrb_first(ng->retransmit);
@@ -202,7 +202,6 @@ void *retransmit_packets(void *state)
             if (node != NULL) {
                 AckEntry *ackentry = (AckEntry *)node->val.v;
                 if(ackentry->acked == 0) {// means, packet not yet acked
-                    resend = 1;
                     double transmittime = dtime();
                     network_resend(state, pqentry->desthost,
                                     pqentry->data, pqentry->datasize, 1,

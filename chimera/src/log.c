@@ -33,6 +33,7 @@ void log_message (void *logs, int type, char *format, ...)
         va_start (ap, format);
         vfprintf (log_fp[type], format, ap);
         fflush (log_fp[type]);	// this is needed to get the contents logged
+        va_end(ap);
     }
 }
 

@@ -459,7 +459,6 @@ int get_col(const Key k, int i){
     if(i > (max_len-1)){
         return 0;
     }
-    i = i;
     int jump = i / m_number_of_digits;
     int sub = jump * m_number_of_digits;
     i = i-sub;

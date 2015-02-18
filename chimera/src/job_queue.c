@@ -76,7 +76,6 @@ void free_node (node * n)
         n->args=NULL;
     }
     free (n);
-    n=NULL;
 }
 
 /** get the queue mutex "access" then
